@@ -5,7 +5,6 @@ import DAO.LopDAO;
 import Model.Khoa;
 import Model.Lop;
 import java.awt.*;
-import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -89,8 +88,10 @@ public class KhoaLopPanel extends JPanel {
         pnl.add(pnlTop, BorderLayout.NORTH);
 
         // Table
-        modelKhoa = new DefaultTableModel(new String[]{"Mã Khoa", "Tên Khoa", "SĐT", "Email"}, 0) {
-            public boolean isCellEditable(int row, int col) { return false; }
+        modelKhoa = new DefaultTableModel(new String[] { "Mã Khoa", "Tên Khoa", "SĐT", "Email" }, 0) {
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
         };
         tblKhoa = new JTable(modelKhoa);
         tblKhoa.setRowHeight(25);
@@ -100,7 +101,8 @@ public class KhoaLopPanel extends JPanel {
                 txtMaKhoa.setText(modelKhoa.getValueAt(row, 0).toString());
                 txtTenKhoa.setText(modelKhoa.getValueAt(row, 1).toString());
                 txtSDTKhoa.setText(modelKhoa.getValueAt(row, 2) != null ? modelKhoa.getValueAt(row, 2).toString() : "");
-                txtEmailKhoa.setText(modelKhoa.getValueAt(row, 3) != null ? modelKhoa.getValueAt(row, 3).toString() : "");
+                txtEmailKhoa
+                        .setText(modelKhoa.getValueAt(row, 3) != null ? modelKhoa.getValueAt(row, 3).toString() : "");
                 txtMaKhoa.setEditable(false);
             }
         });
@@ -154,8 +156,10 @@ public class KhoaLopPanel extends JPanel {
         pnl.add(pnlTop, BorderLayout.NORTH);
 
         // Table
-        modelLop = new DefaultTableModel(new String[]{"Mã Lớp", "Tên Lớp", "Khoa", "Niên Khóa"}, 0) {
-            public boolean isCellEditable(int row, int col) { return false; }
+        modelLop = new DefaultTableModel(new String[] { "Mã Lớp", "Tên Lớp", "Khoa", "Niên Khóa" }, 0) {
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
         };
         tblLop = new JTable(modelLop);
         tblLop.setRowHeight(25);
@@ -183,7 +187,7 @@ public class KhoaLopPanel extends JPanel {
     private void loadTableKhoa() {
         modelKhoa.setRowCount(0);
         for (Khoa k : khoaDAO.getAll()) {
-            modelKhoa.addRow(new Object[]{k.getMaKhoa(), k.getTenKhoa(), k.getSdt(), k.getEmail()});
+            modelKhoa.addRow(new Object[] { k.getMaKhoa(), k.getTenKhoa(), k.getSdt(), k.getEmail() });
         }
     }
 
@@ -197,7 +201,7 @@ public class KhoaLopPanel extends JPanel {
     private void loadTableLop() {
         modelLop.setRowCount(0);
         for (Lop l : lopDAO.getAll()) {
-            modelLop.addRow(new Object[]{l.getMaLop(), l.getTenLop(), l.getMaKhoa(), l.getNienKhoa()});
+            modelLop.addRow(new Object[] { l.getMaLop(), l.getTenLop(), l.getMaKhoa(), l.getNienKhoa() });
         }
     }
 
@@ -221,7 +225,8 @@ public class KhoaLopPanel extends JPanel {
     private void suaKhoa() {
         String ma = txtMaKhoa.getText().trim();
         String ten = txtTenKhoa.getText().trim();
-        if (ma.isEmpty()) return;
+        if (ma.isEmpty())
+            return;
         if (khoaDAO.update(new Khoa(ma, ten, txtSDTKhoa.getText().trim(), txtEmailKhoa.getText().trim()))) {
             JOptionPane.showMessageDialog(this, "Cập nhật Khoa thành công!");
             loadTableKhoa();
@@ -231,7 +236,8 @@ public class KhoaLopPanel extends JPanel {
 
     private void xoaKhoa() {
         String ma = txtMaKhoa.getText().trim();
-        if (ma.isEmpty()) return;
+        if (ma.isEmpty())
+            return;
         if (JOptionPane.showConfirmDialog(this, "Xác nhận xóa Khoa " + ma + "?") == JOptionPane.YES_OPTION) {
             if (khoaDAO.delete(ma)) {
                 JOptionPane.showMessageDialog(this, "Xóa Khoa thành công!");
@@ -273,7 +279,8 @@ public class KhoaLopPanel extends JPanel {
         String ma = txtMaLop.getText().trim();
         String ten = txtTenLop.getText().trim();
         Khoa k = (Khoa) cboKhoaCuaLop.getSelectedItem();
-        if (ma.isEmpty() || k == null) return;
+        if (ma.isEmpty() || k == null)
+            return;
         if (lopDAO.update(new Lop(ma, ten, k.getMaKhoa(), txtNienKhoa.getText().trim()))) {
             JOptionPane.showMessageDialog(this, "Cập nhật Lớp học thành công!");
             loadTableLop();
@@ -282,7 +289,8 @@ public class KhoaLopPanel extends JPanel {
 
     private void xoaLop() {
         String ma = txtMaLop.getText().trim();
-        if (ma.isEmpty()) return;
+        if (ma.isEmpty())
+            return;
         if (JOptionPane.showConfirmDialog(this, "Xác nhận xóa Lớp " + ma + "?") == JOptionPane.YES_OPTION) {
             if (lopDAO.delete(ma)) {
                 JOptionPane.showMessageDialog(this, "Xóa Lớp thành công!");

@@ -6,7 +6,6 @@ import Model.Lop;
 import Model.SinhVien;
 import java.awt.*;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,7 +16,6 @@ public class SinhVienPanel extends JPanel {
     private boolean isAdmin = true;
     private SinhVienDAO svDAO = new SinhVienDAO();
     private LopDAO lopDAO = new LopDAO();
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     // Form inputs
     private JTextField txtMaSV, txtHoTen, txtNgaySinh, txtDiaChi, txtSDT, txtEmail;
@@ -82,9 +80,8 @@ public class SinhVienPanel extends JPanel {
         pnlForm.setBackground(Color.WHITE);
         String formTitle = isAdmin ? "Thông tin sinh viên" : "Thông tin chi tiết (Chỉ xem)";
         pnlForm.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createTitledBorder(formTitle),
-            new EmptyBorder(15, 15, 15, 15)
-        ));
+                BorderFactory.createTitledBorder(formTitle),
+                new EmptyBorder(15, 15, 15, 15)));
         pnlForm.setPreferredSize(new Dimension(360, 400));
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -160,10 +157,12 @@ public class SinhVienPanel extends JPanel {
         pnlForm.add(pnlBtns, gbc);
 
         // Right Table
-        modelSV = new DefaultTableModel(new String[]{
-            "Mã SV", "Họ Tên", "Ngày Sinh", "Giới Tính", "Lớp", "SĐT", "Email", "Quê Quán"
+        modelSV = new DefaultTableModel(new String[] {
+                "Mã SV", "Họ Tên", "Ngày Sinh", "Giới Tính", "Lớp", "SĐT", "Email", "Quê Quán"
         }, 0) {
-            public boolean isCellEditable(int row, int col) { return false; }
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
         };
         tblSinhVien = new JTable(modelSV);
         tblSinhVien.setRowHeight(25);
@@ -217,15 +216,15 @@ public class SinhVienPanel extends JPanel {
     public void loadTableData() {
         modelSV.setRowCount(0);
         for (SinhVien sv : svDAO.getAll()) {
-            modelSV.addRow(new Object[]{
-                sv.getMaSV(),
-                sv.getHoTen(),
-                sv.getNgaySinh(),
-                sv.getGioiTinh(),
-                sv.getMaLop(),
-                sv.getSdt(),
-                sv.getEmail(),
-                sv.getDiaChi()
+            modelSV.addRow(new Object[] {
+                    sv.getMaSV(),
+                    sv.getHoTen(),
+                    sv.getNgaySinh(),
+                    sv.getGioiTinh(),
+                    sv.getMaLop(),
+                    sv.getSdt(),
+                    sv.getEmail(),
+                    sv.getDiaChi()
             });
         }
     }
@@ -236,15 +235,15 @@ public class SinhVienPanel extends JPanel {
         List<SinhVien> list = svDAO.search(kw, lop);
         modelSV.setRowCount(0);
         for (SinhVien sv : list) {
-            modelSV.addRow(new Object[]{
-                sv.getMaSV(),
-                sv.getHoTen(),
-                sv.getNgaySinh(),
-                sv.getGioiTinh(),
-                sv.getMaLop(),
-                sv.getSdt(),
-                sv.getEmail(),
-                sv.getDiaChi()
+            modelSV.addRow(new Object[] {
+                    sv.getMaSV(),
+                    sv.getHoTen(),
+                    sv.getNgaySinh(),
+                    sv.getGioiTinh(),
+                    sv.getMaLop(),
+                    sv.getSdt(),
+                    sv.getEmail(),
+                    sv.getDiaChi()
             });
         }
     }
@@ -267,9 +266,11 @@ public class SinhVienPanel extends JPanel {
     }
 
     private void themSV() {
-        if (!isAdmin) return;
+        if (!isAdmin)
+            return;
         SinhVien sv = getModelFromForm();
-        if (sv == null) return;
+        if (sv == null)
+            return;
         if (svDAO.insert(sv)) {
             JOptionPane.showMessageDialog(this, "Thêm sinh viên thành công!");
             loadTableData();
@@ -280,9 +281,11 @@ public class SinhVienPanel extends JPanel {
     }
 
     private void suaSV() {
-        if (!isAdmin) return;
+        if (!isAdmin)
+            return;
         SinhVien sv = getModelFromForm();
-        if (sv == null) return;
+        if (sv == null)
+            return;
         if (svDAO.update(sv)) {
             JOptionPane.showMessageDialog(this, "Cập nhật sinh viên thành công!");
             loadTableData();
@@ -292,10 +295,13 @@ public class SinhVienPanel extends JPanel {
     }
 
     private void xoaSV() {
-        if (!isAdmin) return;
+        if (!isAdmin)
+            return;
         String ma = txtMaSV.getText().trim();
-        if (ma.isEmpty()) return;
-        if (JOptionPane.showConfirmDialog(this, "Xác nhận xóa sinh viên " + ma + "? Toàn bộ điểm thi liên quan cũng sẽ bị xóa.") == JOptionPane.YES_OPTION) {
+        if (ma.isEmpty())
+            return;
+        if (JOptionPane.showConfirmDialog(this, "Xác nhận xóa sinh viên " + ma
+                + "? Toàn bộ điểm thi liên quan cũng sẽ bị xóa.") == JOptionPane.YES_OPTION) {
             if (svDAO.delete(ma)) {
                 JOptionPane.showMessageDialog(this, "Xóa sinh viên thành công!");
                 loadTableData();
@@ -321,7 +327,8 @@ public class SinhVienPanel extends JPanel {
         }
 
         String gt = rdoNam.isSelected() ? "Nam" : "Nữ";
-        return new SinhVien(ma, ten, ns, gt, txtDiaChi.getText().trim(), txtSDT.getText().trim(), txtEmail.getText().trim(), lop);
+        return new SinhVien(ma, ten, ns, gt, txtDiaChi.getText().trim(), txtSDT.getText().trim(),
+                txtEmail.getText().trim(), lop);
     }
 
     private void clearForm() {

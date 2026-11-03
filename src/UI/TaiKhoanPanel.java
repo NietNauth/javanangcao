@@ -10,15 +10,12 @@ import javax.swing.table.DefaultTableModel;
 public class TaiKhoanPanel extends JPanel {
 
     private TaiKhoanDAO taiKhoanDAO = new TaiKhoanDAO();
-    private TaiKhoan currentUser;
-
     private JTextField txtUser, txtPass, txtHoTen;
     private JComboBox<String> cboVaiTro;
     private JTable tblTaiKhoan;
     private DefaultTableModel modelTK;
 
     public TaiKhoanPanel(TaiKhoan currentUser) {
-        this.currentUser = currentUser;
         initComponents();
         loadData();
     }
@@ -35,7 +32,8 @@ public class TaiKhoanPanel extends JPanel {
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
         lblTitle.setForeground(new Color(25, 42, 86));
 
-        JLabel lblSub = new JLabel("Hệ thống chỉ cho phép duy nhất 1 tài khoản Admin - Admin chỉ cấp tài khoản mới cho Giảng viên");
+        JLabel lblSub = new JLabel(
+                "Hệ thống chỉ cho phép duy nhất 1 tài khoản Admin - Admin chỉ cấp tài khoản mới cho Giảng viên");
         lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         lblSub.setForeground(new Color(113, 128, 150));
 
@@ -47,9 +45,8 @@ public class TaiKhoanPanel extends JPanel {
         JPanel pnlForm = new JPanel(new GridBagLayout());
         pnlForm.setBackground(Color.WHITE);
         pnlForm.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createTitledBorder("Thông tin tài khoản"),
-            new EmptyBorder(15, 15, 15, 15)
-        ));
+                BorderFactory.createTitledBorder("Thông tin tài khoản"),
+                new EmptyBorder(15, 15, 15, 15)));
         pnlForm.setPreferredSize(new Dimension(360, 400));
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -59,7 +56,7 @@ public class TaiKhoanPanel extends JPanel {
         txtUser = new JTextField(15);
         txtPass = new JTextField(15);
         txtHoTen = new JTextField(15);
-        cboVaiTro = new JComboBox<>(new String[]{"Giảng viên"});
+        cboVaiTro = new JComboBox<>(new String[] { "Giảng viên" });
         cboVaiTro.setEnabled(false); // Cố định vai trò là Giảng viên khi tạo mới
 
         addField(pnlForm, gbc, 0, "Tên đăng nhập (*):", txtUser);
@@ -92,8 +89,10 @@ public class TaiKhoanPanel extends JPanel {
         pnlForm.add(pnlBtns, gbc);
 
         // Right: Table
-        modelTK = new DefaultTableModel(new String[]{"Tên đăng nhập", "Họ và Tên", "Vai trò", "Mật khẩu"}, 0) {
-            public boolean isCellEditable(int row, int col) { return false; }
+        modelTK = new DefaultTableModel(new String[] { "Tên đăng nhập", "Họ và Tên", "Vai trò", "Mật khẩu" }, 0) {
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
         };
         tblTaiKhoan = new JTable(modelTK);
         tblTaiKhoan.setRowHeight(25);
@@ -103,7 +102,7 @@ public class TaiKhoanPanel extends JPanel {
                 txtUser.setText(modelTK.getValueAt(row, 0).toString());
                 txtHoTen.setText(modelTK.getValueAt(row, 1).toString());
                 String role = modelTK.getValueAt(row, 2).toString();
-                cboVaiTro.setModel(new DefaultComboBoxModel<>(new String[]{role}));
+                cboVaiTro.setModel(new DefaultComboBoxModel<>(new String[] { role }));
                 cboVaiTro.setEnabled(false);
                 txtPass.setText(modelTK.getValueAt(row, 3).toString());
                 txtUser.setEditable(false);
@@ -130,11 +129,11 @@ public class TaiKhoanPanel extends JPanel {
     public void loadData() {
         modelTK.setRowCount(0);
         for (TaiKhoan tk : taiKhoanDAO.getAll()) {
-            modelTK.addRow(new Object[]{
-                tk.getTenDangNhap(),
-                tk.getHoTen(),
-                tk.getVaiTro(),
-                tk.getMatKhau()
+            modelTK.addRow(new Object[] {
+                    tk.getTenDangNhap(),
+                    tk.getHoTen(),
+                    tk.getVaiTro(),
+                    tk.getMatKhau()
             });
         }
     }
@@ -166,7 +165,8 @@ public class TaiKhoanPanel extends JPanel {
         String hoTen = txtHoTen.getText().trim();
         String vaiTro = (String) cboVaiTro.getSelectedItem();
 
-        if (user.isEmpty() || pass.isEmpty() || hoTen.isEmpty()) return;
+        if (user.isEmpty() || pass.isEmpty() || hoTen.isEmpty())
+            return;
 
         TaiKhoan tk = new TaiKhoan(user, pass, hoTen, vaiTro);
         if (taiKhoanDAO.update(tk)) {
@@ -189,11 +189,13 @@ public class TaiKhoanPanel extends JPanel {
 
         // Bảo vệ tuyệt đối: Không cho phép xóa tài khoản Admin duy nhất
         if ("Admin".equalsIgnoreCase(vaiTro)) {
-            JOptionPane.showMessageDialog(this, "Không thể xóa tài khoản Quản trị viên (Admin) duy nhất của hệ thống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Không thể xóa tài khoản Quản trị viên (Admin) duy nhất của hệ thống!",
+                    "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        if (JOptionPane.showConfirmDialog(this, "Xác nhận xóa tài khoản Giảng viên [" + user + "]?") == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(this,
+                "Xác nhận xóa tài khoản Giảng viên [" + user + "]?") == JOptionPane.YES_OPTION) {
             if (taiKhoanDAO.delete(user)) {
                 JOptionPane.showMessageDialog(this, "Xóa tài khoản thành công!");
                 loadData();
@@ -207,7 +209,7 @@ public class TaiKhoanPanel extends JPanel {
         txtPass.setText("");
         txtHoTen.setText("");
         txtUser.setEditable(true);
-        cboVaiTro.setModel(new DefaultComboBoxModel<>(new String[]{"Giảng viên"}));
+        cboVaiTro.setModel(new DefaultComboBoxModel<>(new String[] { "Giảng viên" }));
         cboVaiTro.setEnabled(false);
         tblTaiKhoan.clearSelection();
     }
